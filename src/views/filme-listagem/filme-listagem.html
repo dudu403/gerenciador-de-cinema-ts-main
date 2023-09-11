@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>Início - APMDb</title>
+
+    <link
+      rel="shortcut icon"
+      href="/assets/favicon.svg"
+      type="image/x-icon"
+    />
+  </head>
+  <body class="bg-dark">
+    <nav class="navbar">
+      <div class="container">
+        <a
+          class="navbar-brand text-light fs-4 fw-bold"
+          href="#"
+        >APMDb</a>
+
+        <button
+          class="btn btn-outline-light"
+          id="paginaInicialBtn"
+        >
+          Página Inicial
+        </button>
+      </div>
+    </nav>
+    <div class="container d-grid gap-3">
+      <h1 class="fw-semibold text-warning">Filmes em Alta</h1>
+
+      <div
+        class="row g-3"
+        id="filmeListagem"
+      >
+      </div>
+    </div>
+
+    <script>
+      function obterFilmesApi() {
+        fetch(
+          "https://api.themoviedb.org/3/movie/popular?language=pt-BR&page=1",
+          {
+            method: "GET",
+            headers: {
+              accept: "application/json",
+              Authorization:
+                "Bearer SUA_CHAVE_DE_API",
+            },
+          }
+        )
+          .then((res) => res.json())
+          .then((data) => {
+            const filmeListagem = document.getElementById(
+              "filmeListagem"
+            );
+
+            data.results.forEach((filme) => {
+              const filmeDiv = document.createElement("div");
+              filmeDiv.classList.add(
+                "col-6",
+                "col-md-4",
+                "col-lg-2"
+              );
+
+              const filmeImagem = document.createElement(
+                "img"
+              );
+              filmeImagem.src = `https://image.tmdb.org/t/p/original/${filme.poster_path}`;
+              filmeImagem.alt = filme.title;
+              filmeImagem.classList.add(
+                "img-fluid",
+                "rounded-3"
+              );
+
+              const filmeTitulo = document.createElement("a");
+              filmeTitulo.href = `detalhes.html?id=${filme.id}`;
+              filmeTitulo.classList.add(
+                "fs-5",
+                "link-warning",
+                "text-decoration-none"
+              );
+              filmeTitulo.innerText = filme.title;
+
+              filmeDiv.appendChild(filmeImagem);
+              filmeDiv.appendChild(filmeTitulo);
+              filmeListagem.appendChild(filmeDiv);
+            });
+          });
+      }
+
+      obterFilmesApi();
+    </script>
+  </body>
+</html>
