@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Filme - APMDb</title>
+    <link rel="shortcut icon" href="/assets/favicon.svg" type="image/x-icon" />
+  </head>
+  <body class="bg-dark">
+    <nav class="navbar">
+      <div class="container">
+        <a class="navbar-brand text-light fs-4 fw-bold" href="index.html">APMDb</a>
+        <a class="btn btn-outline-light" href="index.html">Página Inicial</a>
+      </div>
+    </nav>
+    <div class="container d-grid gap-3 my-4">
+      <div class="row">
+        <div class="d-flex align-items-center">
+          <h1 class="text-light" id="filmeTitulo"></h1>
+          <div class="ms-auto text-end">
+            <p class="text-light" id="filmeVotos"></p>
+            <i class="bi bi-heart fs-2 text-warning" id="filmeCoracao"></i>
+          </div>
+        </div>
+        <p class="fs-5 text-light">Data de Lançamento: <span id="dataLancamento" class="text-light"></span></p>
+      </div>
+      <div class="row gap-3">
+        <div class="col-lg-3">
+          <img
+            src=""
+            class="img-fluid rounded-3"
+            alt=""
+            id="filmePoster"
+          />
+        </div>
+        <div class="col-lg">
+          <div class="ratio ratio-21x9 h-100">
+            <iframe
+              class="rounded-3"
+              id="iframeTrailer"
+              src=""
+              frameborder="0"
+              allowfullscreen
+            ></iframe>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <p class="fs-5 text-light" id="filmeSinopse"></p>
+      </div>
+      <div class="row">
+        <p class="fs-5 text-light" id="filmeGeneros"></p>
+      </div>
+    </div>
+    <script>
+      const apiKey = "ada49338702b0fadaa74ef57953e596c";
+
+      function carregarDetalhesDoFilme() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const filmeId = urlParams.get("id");
+        const apiUrl = `https://api.themoviedb.org/3/movie/${filmeId}?language=pt-BR&api_key=${apiKey}`;
+
+        fetch(apiUrl)
+          .then((res) => res.json())
+          .then((data) => {
+            document.getElementById("filmeTitulo").textContent = data.title;
+            document.getElementById("filmeVotos").textContent = `${data.vote_count} Votos`;
+            document.getElementById("dataLancamento").textContent = data.release_date;
+            document.getElementById("filmePoster").src = `https://image.tmdb.org/t/p/original/${data.poster_path}`;
+            document.getElementById("iframeTrailer").src = `https://www.youtube.com/embed/${data.youtube_trailer_id}`;
+            document.getElementById("filmeSinopse").textContent = data.overview;
+
+            const filmeGeneros = document.getElementById("filmeGeneros");
+            const generos = data.genres.map((genre) => genre.name).join(", ");
+            filmeGeneros.textContent = `Gêneros: ${generos}`;
+            filmeGeneros.style.color = "white"; 
+
+            const dataLancamento = document.getElementById("dataLancamento");
+            dataLancamento.style.color = "white"; 
+          })
+          .catch((error) => {
+            console.error("Erro ao carregar detalhes do filme:", error);
+          });
+      }
+
+      carregarDetalhesDoFilme();
+    </script>
+  </body>
+</html>
